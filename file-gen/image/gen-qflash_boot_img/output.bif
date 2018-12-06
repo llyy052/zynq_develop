@@ -1,9 +1,0 @@
-the_ROM_image:
-{
-	[bootloader]./fsbl.elf
-	./system_top.bit
-	./u-boot.elf
-	[offset = 0x600000]./uImage
-	[offset = 0xC00000]./devicetree.dtb
-	[offset = 0xC10000]./uramdisk.image.gz
-}
