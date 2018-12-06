@@ -1,0 +1,6 @@
+the_ROM_image:
+{
+    [bootloader]../gen-qflash_boot_img/fsbl.elf
+    ../gen-qflash_boot_img/system_top.bit
+    ../gen-qflash_boot_img/u-boot.elf 
+}
