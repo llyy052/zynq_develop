@@ -26,6 +26,23 @@ def sleep(ms):
     crt.Sleep(ms)
     
     
+def ymoden_boot():
+    SEND_CMD("setenv ipaddr 192.168.68.100")#zynq board ip
+    SEND_CMD("setenv serverip 192.168.68.200") #pc ip
+    
+    SEND_CMD("loady ${devicetree_load_address} 115200")
+    wait_string("ynq",200)
+    sleep(500)
+    
+    SEND_CMD("loady ${kernel_load_address} 115200")
+    wait_string("ynq",200)
+    sleep(500)
+    
+    SEND_CMD("loady ${ramdisk_load_address} 115200")
+    wait_string("ynq",200)
+    SEND_CMD("bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}")
+
+    
 def sd_boot():
     """
     "sdboot=if mmcinfo; then " \
@@ -54,12 +71,16 @@ def tftp_boot():
     
     SEND_CMD("tftpboot ${devicetree_load_address} ${devicetree_image}")
     wait_string("Zynq>",5)
-    
+    sleep(500)
+
     SEND_CMD("tftpboot ${kernel_load_address} ${kernel_image}")
     wait_string("Zynq>",20)
-    
+    sleep(500)
+
     SEND_CMD("tftpboot ${ramdisk_load_address} ${ramdisk_image}")
     wait_string("Zynq>",30)
+    sleep(500)
+    
     SEND_CMD("bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}")
 
     #SEND_CMD("aaaaaa")
@@ -90,9 +111,10 @@ def run():
     pass
 
 def main():
+    ymoden_boot()
     #sd_boot()
     #tftp_boot()
-    nfs_boot()    
+    #nfs_boot()    
     
 main()
 
