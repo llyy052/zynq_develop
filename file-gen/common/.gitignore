@@ -1,0 +1,4 @@
+*.dtb
+/uImage
+*.image.gz
+*.elf

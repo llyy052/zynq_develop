@@ -1,5 +1,5 @@
 the_ROM_image:
 {
-    [bootloader]./fsbl.elf
-    ../gen-qflash_boot_img/u-boot.elf 
+    [bootloader]../common/fsbl.elf
+    ../common/u-boot.elf 
 }

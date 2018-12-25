@@ -18,8 +18,9 @@ umount_ramdisk()
 	gzip ramdisk.image
 	rm -rf tmp_mnt
 	#rm tmp_mnt
-	mkimage -n 'uboot ext2 ramdisk' -A arm -O linux -T ramdisk -C gzip -d ramdisk.image.gz ../file-gen/sd_image/uramdisk.image.gz
-	mkimage -n 'uboot ext2 ramdisk' -A arm -O linux -T ramdisk -C gzip -d ramdisk.image.gz ../file-gen/gen-qflash_boot_img/uramdisk.image.gz
+	#mkimage -n 'uboot ext2 ramdisk' -A arm -O linux -T ramdisk -C gzip -d ramdisk.image.gz ../file-gen/sd_image/uramdisk.image.gz
+	#mkimage -n 'uboot ext2 ramdisk' -A arm -O linux -T ramdisk -C gzip -d ramdisk.image.gz ../file-gen/gen-qflash_boot_img/uramdisk.image.gz
+        mkimage -n 'uboot ext2 ramdisk' -A arm -O linux -T ramdisk -C gzip -d ramdisk.image.gz ../file-gen/common/uramdisk.image.gz
 }
 
 cd ../ramdisk

@@ -111,9 +111,9 @@ def run():
     pass
 
 def main():
-    ymoden_boot()
+    #ymoden_boot()
     #sd_boot()
-    #tftp_boot()
+    tftp_boot()
     #nfs_boot()    
     
 main()

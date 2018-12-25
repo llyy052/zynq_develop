@@ -6,7 +6,7 @@
  #make uImage LOADADDR=0x00008000 
  #make zynq-zed-adv7511.dtb
 
-compile_digilent=$1
+compile_digilent=0
 
 
 
@@ -44,8 +44,9 @@ compile_uboot()
     make ARCH=arm   CROSS_COMPILE=arm-xilinx-linux-gnueabi-  menuconfig
     make ARCH=arm   CROSS_COMPILE=arm-xilinx-linux-gnueabi-  
     
-    cp u-boot ../zynq_develop/file-gen/gen-qflash_boot_img/u-boot.elf
-    cp u-boot ../zynq_develop/file-gen/gen_boot.bin/ramdisk/u-boot.elf
+    #cp u-boot ../zynq_develop/file-gen/gen-qflash_boot_img/u-boot.elf
+    #cp u-boot ../zynq_develop/file-gen/gen_boot.bin/ramdisk/u-boot.elf
+    cp u-boot ../zynq_develop/file-gen/common/u-boot.elf
 }
 
 compile_linux()
@@ -71,35 +72,38 @@ compile_linux()
     else
         make ARCH=arm CROSS_COMPILE=arm-xilinx-linux-gnueabi- dtbs
         
-        cp arch/arm/boot/dts/zynq-zed.dtb ../zynq_develop/file-gen/gen-qflash_boot_img/devicetree.dtb
-        cp arch/arm/boot/dts/zynq-zed.dtb ../zynq_develop/file-gen/sd_image/devicetree.dtb
+        #cp arch/arm/boot/dts/zynq-zed.dtb ../zynq_develop/file-gen/gen-qflash_boot_img/devicetree.dtb
+        #cp arch/arm/boot/dts/zynq-zed.dtb ../zynq_develop/file-gen/sd_image/devicetree.dtb
+        cp arch/arm/boot/dts/zynq-zed.dtb ../zynq_develop/file-gen/common/devicetree.dtb
     fi
     
-    cp ./arch/arm/boot/uImage ../zynq_develop/file-gen/gen-qflash_boot_img
-    cp ./arch/arm/boot/zImage ../zynq_develop/file-gen/gen-qflash_boot_img
+    #cp ./arch/arm/boot/uImage ../zynq_develop/file-gen/gen-qflash_boot_img
+    #cp ./arch/arm/boot/zImage ../zynq_develop/file-gen/gen-qflash_boot_img
     
-    cp ./arch/arm/boot/uImage ../zynq_develop/file-gen/sd_image
-    cp ./arch/arm/boot/zImage ../zynq_develop/file-gen/sd_image
+    #cp ./arch/arm/boot/uImage ../zynq_develop/file-gen/sd_image
+    #cp ./arch/arm/boot/zImage ../zynq_develop/file-gen/sd_image
+    cp ./arch/arm/boot/uImage ../zynq_develop/file-gen/common
 }
 
 export ARCH=arm 
 export CROSS_COMPILE=arm-xilinx-linux-gnueabi-
 
 
-    case "$2" in
-    "uboot")
+    case "$1" in
+    "-uboot")
         compile_uboot
         ;;
-    "linux")
+    "-linux")
         compile_linux
         ;;
-    "dts")
+    "-dts")
         cd $linux_folder
         if [ $compile_digilent == 1 ]
         then
             gedit ./arch/arm/boot/dts/digilent-zed.dts
         else
-            gedit ./arch/arm/boot/dts/zynq-zed.dts
+            gedit ./arch/arm/boot/dts/zynq-zed.dts &
+            gedit ./arch/arm/boot/dts/zynq-7000.dtsi &
         fi
         ;;
     *)
