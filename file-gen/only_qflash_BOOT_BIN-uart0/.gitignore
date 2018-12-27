@@ -1,8 +1,2 @@
 *.bin
-*.mcs
-/u-boot uart1.elf
-/u-boot  uart0 ok.elf
-/system_wrapper.bit
-/fsbl.elf
-/fsbl uart1.elf
 /BOOT.bin
