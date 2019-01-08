@@ -27,8 +27,9 @@ struct i2c_msg { //i2c消息结构体，每个i2c消息对应一个结构体
 
 #define DEVICE_PATH_NAME "/dev/i2c-0"
 //#define DEVICE_PATH_NAME "/dev/i2c-1"
-#define CAT9555_DEVICE_ADDR 0x27
+#define CAT9555_DEVICE_ADDR 0x38//0x27
 
+#if 0
 typedef enum{
 	INPUT_PORT0=0,
 	INPUT_PORT1,
@@ -39,6 +40,14 @@ typedef enum{
 	CONFIGURATION_PORT0,
 	CONFIGURATION_PORT1,
 }CAT9555_CMD_e;
+#else
+typedef enum{
+	INPUT_PORT0=0,
+	OUTPUT_PORT0,
+	POLARITY_INVERSION_POART0,
+	CONFIGURATION_PORT0,
+}CAT9555_CMD_e;
+#endif
 
 int cat9555_init(const char *pathname)
 {
@@ -69,13 +78,14 @@ int cat9555_write_reg(int fd,unsigned char devAddr,CAT9555_CMD_e cmd,unsigned ch
     (e2prom_data.msgs[0]).len=2; //此消息的长度为2个字节，第一个字节是要写入数据的地址，第二个字节是要写入的数据 
     (e2prom_data.msgs[0]).addr=devAddr;//e2prom 设备地址 
     (e2prom_data.msgs[0]).flags=0; //写 
-    (e2prom_data.msgs[0]).buf=(unsigned char*)malloc(2); 
+    (e2prom_data.msgs[0]).buf=(unsigned char*)malloc(3); 
     (e2prom_data.msgs[0]).buf[0]=cmd;// e2prom 写入目标的地址 
     (e2prom_data.msgs[0]).buf[1]=data;//写入的数据
+    (e2prom_data.msgs[0]).buf[2]=data;
 	
     ret=ioctl(fd,I2C_RDWR,(unsigned long)&e2prom_data);//通过ioctl进行实际写入操作，后面会详细分析 
     if(ret<0) {
-        perror("ioctl error1");
+        perror("ioctl error111");
     }
 	free((e2prom_data.msgs[0]).buf);
 	free(e2prom_data.msgs);
@@ -124,21 +134,20 @@ int main()
 	sleep(1);
 	
 	cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,CONFIGURATION_PORT0,0x00);//config port0 output
-	sleep(1);
-	cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,CONFIGURATION_PORT1,0x00);//config port1 output
-	sleep(1);
-	cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,POLARITY_INVERSION_POART1,0xff);//inversion port1
+	//sleep(1);
+	//cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,CONFIGURATION_PORT1,0x00);//config port1 output
+	//sleep(1);
+	//cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,POLARITY_INVERSION_POART1,0xff);//inversion port1
 	
 	while(1){
 		sleep(1);
 		cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,OUTPUT_PORT0,data);
-		sleep(1);
-		cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,OUTPUT_PORT1,data);
+		//sleep(1);
+		//cat9555_write_reg(fd,CAT9555_DEVICE_ADDR,OUTPUT_PORT1,data);
 		sleep(1);
 		data++;
-		sleep(1);
-		cat9555_read_reg(fd,CAT9555_DEVICE_ADDR,INPUT_PORT0,&readData);
-		printf("%d,",readData);
+		//cat9555_read_reg(fd,CAT9555_DEVICE_ADDR,INPUT_PORT0,&readData);
+		//printf("%d,",readData);
 	}
 	
 	close(fd);

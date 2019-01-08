@@ -19,23 +19,17 @@ def sleep(ms):
     
     
 def download():
-    SEND_CMD("cd /mnt/")
-    SEND_CMD("lcd Z:/zynq/zynq_develop/file-gen/common/")
-    #SEND_CMD("put uImage")
-    
-    SEND_CMD("cd /mnt/app")
-    SEND_CMD("lcd Z:/zynq/zynq_develop/app/cat9555")
-    SEND_CMD("put cat9555_test.elf")
-
+    SEND_CMD("cd /mnt")
+    SEND_CMD("lcd F:/zynq/strongZynq/strongZynq.runs/impl_1")
+    SEND_CMD("put top7z020.bit")
 
         
 def run():
-    SEND_CMD("cd /mnt/app")
-    SEND_CMD("./cat9555_test.elf")
-
+    pass
 
 def main():
     crt.Screen.Send("\r")
+    #result = crt.Screen.WaitForStrings(["sftp> ", "root"], 1)
     result = crt.Screen.WaitForStrings(["sftp> ", "zynq"], 1)
     if (result == 1):
         download()

@@ -12,7 +12,7 @@ def message(str):
 def SEND_CMD(str):
     crt.Screen.Send(str)
     crt.Screen.Send("\r")
-    #sleep(100)
+    sleep(10)
     
 def sleep(ms):
     crt.Sleep(ms)
@@ -21,17 +21,21 @@ def sleep(ms):
 def download():
     SEND_CMD("cd /mnt/")
     SEND_CMD("lcd Z:/zynq/zynq_develop/file-gen/common/")
-    #SEND_CMD("put uImage")
-    
-    SEND_CMD("cd /mnt/app")
-    SEND_CMD("lcd Z:/zynq/zynq_develop/app/cat9555")
-    SEND_CMD("put cat9555_test.elf")
+    SEND_CMD("put devicetree.dtb")
 
+    SEND_CMD("cd /mnt/app")
+    SEND_CMD("cd /lib/modules/3.6.0/")
+    
+    SEND_CMD("lcd Z:/zynq/zynq_develop/driver/cat9555")
+    SEND_CMD("put cat9555.ko")
 
         
 def run():
     SEND_CMD("cd /mnt/app")
-    SEND_CMD("./cat9555_test.elf")
+    SEND_CMD("cd /lib/modules/3.6.0")
+    SEND_CMD("depmod")
+    SEND_CMD("modprobe cat9555")
+    #SEND_CMD("insmod cat9555.ko")
 
 
 def main():
