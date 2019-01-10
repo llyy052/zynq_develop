@@ -104,6 +104,7 @@ export CROSS_COMPILE=arm-xilinx-linux-gnueabi-
         else
             gedit ./arch/arm/boot/dts/zynq-zed.dts &
             gedit ./arch/arm/boot/dts/zynq-7000.dtsi &
+            gedit ./arch/arm/boot/dts/zynq-zed-pl.dtsi &
         fi
         ;;
     *)

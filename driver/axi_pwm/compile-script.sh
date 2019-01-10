@@ -6,8 +6,9 @@ rm ./*.symvers
 rm ./*.order
 rm ./*.o
 rm ./*.mod.c
-rm ./*.cmd
-rm -rf .*
+#rm ./*.cmd
+rm -rf ./.*
 
- 
- 
+cd test
+sh compile.sh
+cd ..

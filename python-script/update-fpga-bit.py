@@ -20,7 +20,7 @@ def sleep(ms):
     
 def download():
     SEND_CMD("cd /mnt")
-    SEND_CMD("lcd F:/zynq/strongZynq/strongZynq.runs/impl_1")
+    SEND_CMD("lcd F:/zynq/strongZynqBoard/strongZynq.runs/impl_1")
     SEND_CMD("put top7z020.bit")
 
         
