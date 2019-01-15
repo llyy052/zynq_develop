@@ -9,10 +9,14 @@ def message(str):
     crt.Screen.Print(str)
     pass
     
+def SEND_CMD_NO_DELAY(str):
+    crt.Screen.Send(str)
+    crt.Screen.Send("\r")
+
 def SEND_CMD(str):
     crt.Screen.Send(str)
     crt.Screen.Send("\r")
-    sleep(10)
+    sleep(50)
     
 def sleep(ms):
     crt.Sleep(ms)
@@ -34,13 +38,20 @@ def download():
     SEND_CMD("put axi_pwm_drv_test.elf")
         
 def run():
+    SEND_CMD_NO_DELAY("lsmod")
+    result = crt.Screen.WaitForString("axi_pwm", 1)
+    if (result == 1):
+        SEND_CMD("rmmod axi_pwm")
+        return
+    SEND_CMD("mkdir -p /lib/modules/$(uname -r)")
     #SEND_CMD("cd /mnt/app")
     SEND_CMD("cd /tmp/")
 
-    #SEND_CMD("mknod /dev/axi_pwm-0 c 99 0")
-    #SEND_CMD("mknod /dev/axi_pwm-1 c 99 1")
+    SEND_CMD("mknod /dev/axi_pwm-0 c 99 0")
+    SEND_CMD("mknod /dev/axi_pwm-1 c 99 1")
     SEND_CMD("insmod axi_pwm.ko")
     SEND_CMD("chmod 777 axi_pwm_drv_test.elf")
+
     #SEND_CMD("./axi_pwm_drv_test.elf")
 
 def main():

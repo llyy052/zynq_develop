@@ -34,11 +34,10 @@ struct axi_pwm{
     unsigned int period;
     unsigned int resolution;
 };
-static struct class *axi_pwm_class;
-
 
 static LIST_HEAD(axi_pwm_list);
 static DEFINE_SPINLOCK(axi_pwm_list_lock);
+static struct class *axi_pwm_class;
 
 static struct axi_pwm *axi_pwm_get_by_minor(unsigned index)
 {
@@ -67,7 +66,7 @@ static struct axi_pwm *get_free_axi_pwm(int nr)
     spin_unlock(&axi_pwm_list_lock);
     return axi_pwm;
 }
-#if 0
+
 static void return_axi_pwm(struct axi_pwm *axi_pwm)
 {
     spin_lock(&axi_pwm_list_lock);
@@ -75,8 +74,6 @@ static void return_axi_pwm(struct axi_pwm *axi_pwm)
     spin_unlock(&axi_pwm_list_lock);
     kfree(axi_pwm);
 }
-
-#endif
 
 static const struct of_device_id axi_pwm_of_match[] = {
     { .compatible = "xlnx,AXI-PWM-1.0"},
@@ -142,7 +139,6 @@ static int axi_pwm_probe(struct platform_device *pdev)
     struct axi_pwm *id;
     const struct of_device_id *match;
     int minor;
-    int res;
     r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
     minor = (r_mem->start>>16)&0x0f;
     id = get_free_axi_pwm(minor);
@@ -154,7 +150,6 @@ static int axi_pwm_probe(struct platform_device *pdev)
 
     match = of_match_node(axi_pwm_of_match, pdev->dev.of_node);
 
-    
     id->membase = devm_ioremap_resource(&pdev->dev, r_mem);
     printk("r_mem=%x,membase=%x  \r\n",r_mem->start,(u32)id->membase);
     if (IS_ERR(id->membase))
@@ -166,10 +161,6 @@ static int axi_pwm_probe(struct platform_device *pdev)
     
     id->dev = device_create(axi_pwm_class, NULL, MKDEV(AXI_PWM_MAJOR, id->nr),
                                 NULL, "axi_pwm-%d",id->nr);
-    dev_set_name(id->dev,"axi_pwm-%d",id->nr);
-    res = device_register(id->dev);
-    if(res)
-        return res;
     pwm_writereg(100*1000*1000,REG_PRESCALE_OFFSET);
     pwm_writereg(2,REG_RESOLUTION_OFFSET);
     pwm_writereg(1,REG_DUTY_OFFSET);
@@ -181,7 +172,9 @@ static int axi_pwm_probe(struct platform_device *pdev)
 static int axi_pwm_remove(struct platform_device *pdev)
 {
     struct axi_pwm *id = platform_get_drvdata(pdev);
-    devm_kfree(id->dev,id);
+    printk("%s\r\n",__func__);
+    return_axi_pwm(id);
+    device_destroy(axi_pwm_class,MKDEV(AXI_PWM_MAJOR, id->nr) );
     return 0;
 }
 
@@ -212,6 +205,7 @@ module_init(axi_pwm_init);
 
 static void __exit axi_pwm_exit(void)
 {
+    printk("%s\r\n",__func__);
     class_destroy(axi_pwm_class);
     unregister_chrdev(AXI_PWM_MAJOR, "axi_pwm");
     platform_driver_unregister(&axi_pwm_drv);
